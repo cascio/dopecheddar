@@ -11,7 +11,8 @@ def get_recent_favorites(soundcloud_user_id, n):
     soundcloud_client = soundcloud.Client(client_id=environ['SOUNDCLOUD_CLIENT_ID'], client_secret=environ['SOUNDCLOUD_SECRET_ID'])
     try:
         recent_tracks = soundcloud_client.get(path, limit=limit)
-        return recent_tracks
+        converted_tracks = convert_to_SoundcloudTrack(recent_tracks)
+        return converted_tracks
     except Exception as error:
         print('Error: %s, Status Code: %d' % (error.message, error.response.status_code))
 
