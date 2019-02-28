@@ -8,10 +8,8 @@
 A Python based automation tool for distributing electronic music content personally curated by Michael Cascio.
 </p>
 
-<p align="center">
 - [Why](#why)
 - [How](#what)
-</p>
 
 ## Why
 
