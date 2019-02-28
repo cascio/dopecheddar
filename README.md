@@ -2,9 +2,13 @@
 
 <p align="center">
 <img alt="dopecheddar logo" width="200" src="https://github.com/cascio/dopecheddar/raw/master/dopecheddar.png"/>
+</p>
 
+<p align="center">
 A Python based automation tool for distributing electronic music content personally curated by Michael Cascio.
+</p>
 
+<p align="center">
 - [Why](#why)
 - [How](#what)
 </p>
