@@ -1,5 +1,6 @@
 from os import environ
 from requests_oauthlib import OAuth1Session
+import time
 
 def startOauth(client_key, client_secret, resource_owner_key, resource_owner_secret):
     oauth = OAuth1Session(
@@ -24,16 +25,20 @@ def postTrackToTumblr(client_key, client_secret, resource_owner_key, resource_ow
     oauth = startOauth(client_key, client_secret, resource_owner_key, resource_owner_secret)
     payload = createTumblrPayload(track)
     successfulPost = False
+
+    # The code below needs to be revisited because it is probably not the right solution to the problem
+    # where Tumblr randomly throws a 400 request status code even if you'rs below the rate limit.
+    # When I previously research this problem online, simply waiting and retrying was a solution that worked...
     while successfulPost == False:
         req = oauth.post(post_url, data=payload)
-        if req.content[18:24] == "400":
-            print(r.content)
+        if req.status_code == 400:
+            print(req.content)
             print("-->Posting to Tumblr was not successful")
             print("-->Waiting a couplah seconds")
             time.sleep(3)
-            print("-->Trying again")
+            print("-->Trying to post to Tumblr again")
         else:
             print(req.content)
-            print("-->Posting to Tumblr was successful")
-            print(2 * "")
+            print("-->Track was successfully posted to Tumblr:")
+            print(f"-->{req.content}")
             successfulPost = True

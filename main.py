@@ -25,23 +25,34 @@ def setEnvironment():
     return required_env_vars
 
 def main():
+    print("-----TURNING UP-----")
+    print("")
     configs = setEnvironment()
 
     # set soundcloud_user_id to target and num_tracks to retreive
     soundcloud_user_id = '50163285' # dopecheddar's account id ;)
-    num_tracks = 1
+    num_tracks = 10
+
+    print(f"Retreiving {num_tracks} tracks from Soundcloud user {soundcloud_user_id}")
+    print("")
 
     recent_tracks = get_recent_favorites(configs['SOUNDCLOUD_CLIENT_ID'], configs['SOUNDCLOUD_SECRET_ID'], soundcloud_user_id, num_tracks)
-
-    for track in recent_tracks:  
+    for track in recent_tracks:
+        print(f"{track.name}")  
         if track_already_archived(configs['DOPECHEDDAR_DB'], track.track_id):
-            print("Track Is Already In Database")
+            print("-->This track has already been posted to dopecheddar and is already archived in the database.")
+            print("")
             pass
         else:
-            print("Track Has Not Yet Been Saved To Database......Saving Now")
+            print("-->Unique track identified. Posting to Tumblr now.")
             postTrackToTumblr(configs['TUMBLR_CLIENT_KEY'], configs['TUMBLR_CLIENT_SECRET'], configs['TUMBLR_RESOURCE_OWNER_KEY'], configs['TUMBLR_RESOURCE_OWNER_SECRET'], configs['TUMBLR_POST_URL'], track)
+            print("-->Archiving in database now.")
             archive_track(configs['DOPECHEDDAR_DB'], track)
-            print("Track Archived Successfully")
+            print("-->Track was archived successfully")
+            print("")
+    
+    print("-----TURNING DOWN-----")
+    print("")
 
 if __name__ == "__main__":
     main()
