@@ -1,4 +1,3 @@
-from os import environ
 from sqlalchemy import create_engine, Column, String
 from sqlalchemy.ext.declarative import declarative_base  
 from sqlalchemy.orm import sessionmaker
@@ -25,21 +24,21 @@ class SoundcloudTrack(Base):
         self.tag_list = tag_list
 
 # creating a SQLAlchemy engine and session to connect to and interact with postgreSQL database
-def get_database_session():
-    db_string = environ['DOPECHEDDAR_DB'] # environment variable contains location of postgres database
+def get_database_session(db_string):
+    db_string = db_string # location of postgres database
     db = create_engine(db_string)
     Session = sessionmaker(db)  
     session = Session()
     return session
 
 # checks if the track is unique compared to the Postgres database using SQLAlchemy
-def track_already_archived(track_id):
-    session = get_database_session()
+def track_already_archived(db_string, track_id):
+    session = get_database_session(db_string)
     ret = session.query(exists().where(SoundcloudTrack.track_id==track_id)).scalar()
     return ret
 
-def archive_track(track):
-    session = get_database_session()
+def archive_track(db_string, track):
+    session = get_database_session(db_string)
     session.add(track)
     session.commit()
 

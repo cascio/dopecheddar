@@ -1,14 +1,13 @@
-from os import environ
 from track_data import SoundcloudTrack
 import soundcloud
 
 # retreive the latest "n" tracks favorited by a "soundcloud_user_id"
 # returns a soundcloud.resource.Resource object with requested track info
-def get_recent_favorites(soundcloud_user_id, n):
+def get_recent_favorites(client_id, client_secret, soundcloud_user_id, n):
     path = '/users/%s/favorites' % str(soundcloud_user_id)
     limit = int(n)
     # initialize soundcloud API client
-    soundcloud_client = soundcloud.Client(client_id=environ['SOUNDCLOUD_CLIENT_ID'], client_secret=environ['SOUNDCLOUD_SECRET_ID'])
+    soundcloud_client = soundcloud.Client(client_id=client_id, client_secret=client_secret)
     try:
         recent_tracks = soundcloud_client.get(path, limit=limit)
         converted_tracks = convert_to_SoundcloudTrack(recent_tracks)
