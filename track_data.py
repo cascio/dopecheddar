@@ -2,6 +2,7 @@ from sqlalchemy import create_engine, Column, String
 from sqlalchemy.ext.declarative import declarative_base  
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.sql import exists
+import re
 
 # using declarative_base() to take advantage of SQLAlchemy's ORM capabilities
 Base = declarative_base()
@@ -21,7 +22,7 @@ class SoundcloudTrack(Base):
         self.url = url
         self.genre = genre
         self.label = label
-        self.tag_list = tag_list
+        self.tag_list = generate_track_tags(tag_list)
 
 # creating a SQLAlchemy engine and session to connect to and interact with postgreSQL database
 def get_database_session(db_string):
@@ -41,6 +42,23 @@ def archive_track(db_string, track):
     session = get_database_session(db_string)
     session.add(track)
     session.commit()
+
+def generate_track_tags(tag_list):
+    # What should never be a tag
+    do_not_tag = ["exclusive", "premiere", "ep", "lp", "first floor premiere", ]
+    always_tag = ["dopecheddar", "electronic music", "electronic", "music"]
+    # Convert all characters in tag list from soundcloud post to lowercase to catch duplicates
+    tag_list = tag_list.lower()
+    # Identify two word tags from soundcloud post and start a final tag list
+    final_tags = re.findall('"(.*?)"', tag_list)
+    # Remove two word tags from soundcloud post from soundcloud post track list
+    for quoted_tag in final_tags:
+        tag_list = tag_list.replace(f'"{quoted_tag}"', '')
+    # Create list by splitting the soundcloud post string tag list at spaces
+    tag_list = tag_list.split()
+    final_tags = list(set(final_tags + tag_list + always_tag) - set(do_not_tag))
+    final_tags = ", ".join(final_tags)
+    return final_tags
 
 # creates tables based on SQLAlchemy's ORM if they do not exist; no longer needed for me
 #Base.metadata.create_all(db)

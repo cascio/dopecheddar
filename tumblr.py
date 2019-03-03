@@ -32,13 +32,16 @@ def postTrackToTumblr(client_key, client_secret, resource_owner_key, resource_ow
     while successfulPost == False:
         req = oauth.post(post_url, data=payload)
         if req.status_code == 400:
-            print(req.content)
+            print(f"-->{req.content}")
             print("-->Posting to Tumblr was not successful")
             print("-->Waiting a couplah seconds")
             time.sleep(3)
             print("-->Trying to post to Tumblr again")
+        elif req.status_code == 401:
+            print(f"-->{req.content}")
+            print("-->Woops...401 Error")
+            break
         else:
-            print(req.content)
             print("-->Track was successfully posted to Tumblr:")
             print(f"-->{req.content}")
             successfulPost = True

@@ -1,7 +1,7 @@
 from os import environ
 from soundcloud_tools import get_recent_favorites
 from tumblr import postTrackToTumblr
-from track_data import archive_track, track_already_archived
+from track_data import archive_track, generate_track_tags, track_already_archived
 from sys import exit
 
 def setEnvironment():
@@ -37,10 +37,11 @@ def main():
     print("")
 
     recent_tracks = get_recent_favorites(configs['SOUNDCLOUD_CLIENT_ID'], configs['SOUNDCLOUD_SECRET_ID'], soundcloud_user_id, num_tracks)
+
     for track in recent_tracks:
         print(f"{track.name}")  
         if track_already_archived(configs['DOPECHEDDAR_DB'], track.track_id):
-            print("-->This track has already been posted to dopecheddar and is already archived in the database.")
+            print("-->Track already posted & archived")
             print("")
             pass
         else:
