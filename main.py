@@ -16,6 +16,7 @@ def setEnvironment():
         'TUMBLR_POST_URL': None,
     }
 
+    # Checking that the required environment variables are set
     for var in required_env_vars:
         if var in environ:
             required_env_vars[var] = environ[var]

@@ -44,19 +44,22 @@ def archive_track(db_string, track):
     session.commit()
 
 def generate_track_tags(tag_list):
-    # What should never be a tag
+    # Strings that should never be tagged:
     do_not_tag = ["exclusive", "premiere", "ep", "lp", "first floor premiere", ]
+    # Strings that should always be tagged
     always_tag = ["dopecheddar", "electronic music", "electronic", "music"]
-    # Convert all characters in tag list from soundcloud post to lowercase to catch duplicates
+    # Convert all characters in tag list retrieved from soundcloud post to lowercase for duplicate catching
     tag_list = tag_list.lower()
-    # Identify two word tags from soundcloud post and start a final tag list
+    # Identify soudcloud post two-word tags and start final tag list
     final_tags = re.findall('"(.*?)"', tag_list)
-    # Remove two word tags from soundcloud post from soundcloud post track list
+    # Remove two-word tags from tag list retrieved from soundcloud post
     for quoted_tag in final_tags:
         tag_list = tag_list.replace(f'"{quoted_tag}"', '')
-    # Create list by splitting the soundcloud post string tag list at spaces
+    # Create list from string of tags retrieved from soundcloud post
     tag_list = tag_list.split()
+    # Combining final tag list and removing items that should never be tagged
     final_tags = list(set(final_tags + tag_list + always_tag) - set(do_not_tag))
+    # Tumblr requires tags to be a string with each tag seperated by commas
     final_tags = ", ".join(final_tags)
     return final_tags
 
