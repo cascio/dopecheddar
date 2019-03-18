@@ -1,14 +1,15 @@
+'''Postgres database functionality with SQLAlchemy ORM capabilities'''
+
+import re
 from sqlalchemy import create_engine, Column, String
-from sqlalchemy.ext.declarative import declarative_base  
+from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.sql import exists
-import re
 
-# using declarative_base() to take advantage of SQLAlchemy's ORM capabilities
 Base = declarative_base()
 
-# SoundCloudTrack object; subclassing 'Base" for SQLAlchemy.
 class SoundcloudTrack(Base):
+    '''Custom SoundcloudTrack object and Postgres database schema'''
     __tablename__ = 'SoundcloudTracks'
     name = Column(String)
     track_id = Column(String, primary_key=True)
@@ -24,31 +25,32 @@ class SoundcloudTrack(Base):
         self.label = label
         self.tag_list = generate_track_tags(tag_list)
 
-# creating a SQLAlchemy engine and session to connect to and interact with postgreSQL database
 def get_database_session(db_string):
+    '''Create SQLAlchemy engine and session to connect to and interact with Postgres database'''
     db_string = db_string # location of postgres database
-    db = create_engine(db_string)
-    Session = sessionmaker(db)  
+    database = create_engine(db_string)
+    Session = sessionmaker(database)
     session = Session()
     return session
 
-# checks if the track is unique compared to the Postgres database using SQLAlchemy
 def track_already_archived(db_string, track_id):
+    '''Check if track has already been archived to Postgres database'''
     session = get_database_session(db_string)
-    ret = session.query(exists().where(SoundcloudTrack.track_id==track_id)).scalar()
+    ret = session.query(exists().where(SoundcloudTrack.track_id == track_id)).scalar()
     return ret
 
 def archive_track(db_string, track):
+    '''Add track to Postgres database'''
     session = get_database_session(db_string)
     session.add(track)
     session.commit()
 
 def generate_track_tags(tag_list):
-    # Strings that should never be tagged:
+    '''Generate a tag list from retreived soundcloud string. Returns string seperated by commas'''
     do_not_tag = ["exclusive", "premiere", "ep", "lp", "first floor premiere", ]
     # Strings that should always be tagged
     always_tag = ["dopecheddar", "electronic music", "electronic", "music"]
-    # Convert all characters in tag list retrieved from soundcloud post to lowercase for duplicate catching
+    # Convert characters to lowercase for duplicate catching
     tag_list = tag_list.lower()
     # Identify soudcloud post two-word tags and start final tag list
     final_tags = re.findall('"(.*?)"', tag_list)
@@ -64,4 +66,4 @@ def generate_track_tags(tag_list):
     return final_tags
 
 # creates tables based on SQLAlchemy's ORM if they do not exist; no longer needed for me
-#Base.metadata.create_all(db)
+#Base.metadata.create_all(database)
