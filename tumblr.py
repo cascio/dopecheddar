@@ -29,14 +29,19 @@ def postTrackToTumblr(client_key, client_secret, resource_owner_key, resource_ow
     # The code below needs to be revisited because it is probably not the right solution to the problem
     # where Tumblr randomly throws a 400 request status code even if you'rs below the rate limit.
     # When I previously research this problem online, simply waiting and retrying was a solution that worked...
+    tries = 0
     while successfulPost == False:
         req = oauth.post(post_url, data=payload)
+        tries += 1
         if req.status_code == 400:
             print(f"-->{req.content}")
             print("-->Posting to Tumblr was not successful")
-            print("-->Waiting a couplah seconds")
-            time.sleep(3)
-            print("-->Trying to post to Tumblr again")
+            if tries < 4:
+                print("-->Waiting a couplah seconds")
+                time.sleep(3)
+                print("-->Trying to post to Tumblr again")
+            else:
+                break
         elif req.status_code == 401:
             print(f"-->{req.content}")
             print("-->Woops...401 Error")
