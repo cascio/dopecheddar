@@ -51,17 +51,20 @@ def main():
             print("")
         else:
             print("-->Unique track identified. Posting to Tumblr now.")
-            postTrackToTumblr(
+            wasSuccessful = postTrackToTumblr(
                 configs['TUMBLR_CLIENT_KEY'],
                 configs['TUMBLR_CLIENT_SECRET'],
                 configs['TUMBLR_RESOURCE_OWNER_KEY'],
                 configs['TUMBLR_RESOURCE_OWNER_SECRET'],
                 configs['TUMBLR_POST_URL'],
                 track)
-            print("-->Archiving in database now.")
-            archive_track(configs['DOPECHEDDAR_DB'], track)
-            print("-->Track was archived successfully")
-            print("")
+            if wasSuccessful == True:
+                print("-->Archiving in database now.")
+                archive_track(configs['DOPECHEDDAR_DB'], track)
+                print("-->Track was archived successfully")
+                print("")
+            else:
+                print("-->Track was not successfuly posted to Tumblr or archived")
 
     print("-----TURNING DOWN-----")
     print("")

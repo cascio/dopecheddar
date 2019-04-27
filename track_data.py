@@ -1,7 +1,7 @@
 '''Postgres database functionality with SQLAlchemy ORM capabilities'''
 
 import re
-from sqlalchemy import create_engine, Column, String
+from sqlalchemy import create_engine, Boolean, Column, String
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.sql import exists
@@ -17,6 +17,8 @@ class SoundcloudTrack(Base):
     genre = Column(String)
     label = Column(String)
     tag_list = Column(String)
+    posted_to_tumblr = Column(Boolean, default=False)
+    posted_to_twitter = Column(Boolean, default=False)
     def __init__(self, name, track_id, url, genre, label, tag_list):
         self.name = name
         self.track_id = str(track_id)
@@ -24,6 +26,8 @@ class SoundcloudTrack(Base):
         self.genre = genre
         self.label = label
         self.tag_list = generate_track_tags(tag_list)
+        self.posted_to_tumblr = False
+        self.posted_to_twitter = False
 
 def get_database_session(db_string):
     '''Create SQLAlchemy engine and session to connect to and interact with Postgres database'''
@@ -40,7 +44,8 @@ def track_already_archived(db_string, track_id):
     return ret
 
 def archive_track(db_string, track):
-    '''Add track to Postgres database'''
+    '''Add track to Postgres database and set posted_to_tumblr to True'''
+    track.posted_to_tumblr = True
     session = get_database_session(db_string)
     session.add(track)
     session.commit()

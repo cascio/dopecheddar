@@ -41,12 +41,13 @@ def postTrackToTumblr(client_key, client_secret, resource_owner_key, resource_ow
                 time.sleep(3)
                 print("-->Trying to post to Tumblr again")
             else:
-                break
+                return False
         elif req.status_code == 401:
             print(f"-->{req.content}")
             print("-->Woops...401 Error")
-            break
+            return False
         else:
             print("-->Track was successfully posted to Tumblr:")
             print(f"-->{req.content}")
             successfulPost = True
+    return True
