@@ -1,4 +1,4 @@
-'''Postgres database functionality with SQLAlchemy ORM capabilities'''
+"""Postgres database functionality with SQLAlchemy ORM capabilities"""
 
 import re
 from sqlalchemy import create_engine, Boolean, Column, String
@@ -9,7 +9,7 @@ from sqlalchemy.sql import exists
 Base = declarative_base()
 
 class SoundcloudTrack(Base):
-    '''Custom SoundcloudTrack object and Postgres database schema'''
+    """Custom SoundcloudTrack object and Postgres database schema"""
     __tablename__ = 'SoundcloudTracks'
     name = Column(String)
     track_id = Column(String, primary_key=True)
@@ -30,7 +30,7 @@ class SoundcloudTrack(Base):
         self.posted_to_twitter = False
 
 def get_database_session(db_string):
-    '''Create SQLAlchemy engine and session to connect to and interact with Postgres database'''
+    """Create SQLAlchemy engine and session to connect to and interact with Postgres database"""
     db_string = db_string # location of postgres database
     database = create_engine(db_string)
     Session = sessionmaker(database)
@@ -38,20 +38,20 @@ def get_database_session(db_string):
     return session
 
 def track_already_archived(db_string, track_id):
-    '''Check if track has already been archived to Postgres database'''
+    """Check if track has already been archived to Postgres database"""
     session = get_database_session(db_string)
     ret = session.query(exists().where(SoundcloudTrack.track_id == track_id)).scalar()
     return ret
 
 def archive_track(db_string, track):
-    '''Add track to Postgres database and set posted_to_tumblr to True'''
+    """Add track to Postgres database and set posted_to_tumblr to True"""
     track.posted_to_tumblr = True
     session = get_database_session(db_string)
     session.add(track)
     session.commit()
 
 def generate_track_tags(tag_list):
-    '''Generate a tag list from retreived soundcloud string. Returns string seperated by commas'''
+    """Generate a tag list from retreived soundcloud string. Returns string seperated by commas"""
     do_not_tag = ["exclusive", "premiere", "ep", "lp", "first floor premiere", ]
     # Strings that should always be tagged
     always_tag = ["dopecheddar", "electronic music", "electronic", "music"]

@@ -1,4 +1,4 @@
-'''Main music content distribution functionality'''
+"""Main music content distribution functionality"""
 
 from os import environ
 from soundcloud_tools import get_recent_favorites
@@ -6,7 +6,7 @@ from track_data import archive_track, track_already_archived
 from tumblr import postTrackToTumblr
 
 def set_environment():
-    '''Retreives configurations from enviroment variables, if properly set'''
+    """Retreives configurations from enviroment variables, if properly set"""
     required_env_vars = {
         'DOPECHEDDAR_DB': None,
         'SOUNDCLOUD_CLIENT_ID': None,
@@ -27,7 +27,7 @@ def set_environment():
     return required_env_vars
 
 def main():
-    '''Just do it!'''
+    """Just do it!"""
     print("-----TURNING UP-----")
     print("")
     configs = set_environment()
