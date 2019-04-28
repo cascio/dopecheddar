@@ -5,6 +5,7 @@ from sqlalchemy import create_engine, Boolean, Column, String
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.sql import exists
+from sqlalchemy.sql.expression import func
 
 Base = declarative_base()
 
@@ -69,6 +70,19 @@ def generate_track_tags(tag_list):
     # Tumblr requires tags to be a string with each tag seperated by commas
     final_tags = ", ".join(final_tags)
     return final_tags
+
+def get_random_unposted_twitter_track(db_string):
+    session = get_database_session(db_string)
+    query = session.query(SoundcloudTrack).filter(SoundcloudTrack.posted_to_twitter==False).order_by(func.random()).limit(1)
+    for random_track in query:
+        ret = random_track
+    return ret
+
+def posted_to_twitter(db_string, track):
+    session = get_database_session(db_string)
+    query = session.query(SoundcloudTrack).filter_by(track_id=track.track_id).first() 
+    query.posted_to_twitter = True
+    session.commit()
 
 # creates tables based on SQLAlchemy's ORM if they do not exist; no longer needed for me
 #Base.metadata.create_all(database)
