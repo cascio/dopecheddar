@@ -1,3 +1,5 @@
+"""Tumblr API related functionality"""
+
 from os import environ
 from requests_oauthlib import OAuth1Session
 import time

@@ -72,6 +72,7 @@ def generate_track_tags(tag_list):
     return final_tags
 
 def get_random_unposted_twitter_track(db_string):
+    """Returns a SoundcloudTrack object of a random track within the dopecheddar database"""
     session = get_database_session(db_string)
     query = session.query(SoundcloudTrack).filter(SoundcloudTrack.posted_to_twitter==False).order_by(func.random()).limit(1)
     for random_track in query:
@@ -79,6 +80,7 @@ def get_random_unposted_twitter_track(db_string):
     return ret
 
 def posted_to_twitter(db_string, track):
+    """Set posted_to_twitter to True after track has been tweeted"""
     session = get_database_session(db_string)
     query = session.query(SoundcloudTrack).filter_by(track_id=track.track_id).first() 
     query.posted_to_twitter = True

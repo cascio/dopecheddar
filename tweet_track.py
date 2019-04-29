@@ -1,3 +1,5 @@
+"""Twitter API related functionality"""
+
 from track_data import get_random_unposted_twitter_track, posted_to_twitter
 from os import environ
 from urllib.parse import quote_plus
@@ -22,6 +24,7 @@ def set_environment():
     return required_env_vars
 
 def main():
+    """Tweets a random track from the dopecheddar database"""
     configs = set_environment()
     random_track = get_random_unposted_twitter_track(configs['DOPECHEDDAR_DB'])
     consumer = oauth2.Consumer(key=configs['TWITTER_CONSUMER_API_KEY'], secret=configs['TWITTER_CONSUMER_API_SECRET_KEY'])
