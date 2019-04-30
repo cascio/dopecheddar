@@ -27,6 +27,7 @@ def main():
     """Tweets a random track from the dopecheddar database"""
     configs = set_environment()
     random_track = get_random_unposted_twitter_track(configs['DOPECHEDDAR_DB'])
+    print(f'Random Track Selected: {random_track.name}')
     consumer = oauth2.Consumer(key=configs['TWITTER_CONSUMER_API_KEY'], secret=configs['TWITTER_CONSUMER_API_SECRET_KEY'])
     token = oauth2.Token(key=configs['TWITTER_ACCESS_TOKEN'], secret=configs['TWITTER_ACCESS_SECRET'])
     client = oauth2.Client(consumer, token)
@@ -36,7 +37,7 @@ def main():
     while successfulTweet == False:
         resp, content = client.request(url, method="POST", body="", headers=None)
         if resp.status == 200:
-            print("Tweet Was Successful", end='\n\n')
+            print("Tweet Was Successful")
             posted_to_twitter(configs['DOPECHEDDAR_DB'], random_track)
             successfulTweet = True
         else:
